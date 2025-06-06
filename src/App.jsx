@@ -21,13 +21,14 @@ const App = () => {
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMovies = async () => {
+  const fetchMovies = async (query = '') => {
     setIsLoading(true);
     setErrorMessage('');
 
     try {
-      const endPoint = `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
-
+      const endPoint = query
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
       const response = await fetch(endPoint, API_OTIONS);
 
       if (!response.ok) {
@@ -52,12 +53,9 @@ const App = () => {
   }
 
   useEffect(() => {
-    fetchMovies();
+    fetchMovies(searchTerm);
 
-    return () => {
-      console.log("Componente desmontado!");
-    };
-  }, []); // array de dependências
+  }, [searchTerm]); // array de dependências
 
 
   return (
